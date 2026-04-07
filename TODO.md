@@ -1,13 +1,11 @@
-# Tarot Deck Implementation Plan
+# Horizontal 5-Card Tarot Update Plan
 
 ## Steps:
-- [x] Step 1: Define 22 Major Arcana Tarot cards data in App.tsx
-- [x] Step 2: Update App.tsx to render fanned deck + emerging draw animation
-- [x] Step 3: Add deck styles and emerge animation to index.css
-- [x] Step 4: Test with `npm run dev` and verify on mobile/desktop
+- [x] Step 1: Update App.tsx for 5 horizontal cards, full shuffle + draw logic
+- [ ] Step 2: Update index.css for horizontal row fan layout + animations
+- [ ] Step 3: Test responsiveness and functionality
 
-Current progress: All steps complete. Tarot deck is ready!
-
+Current progress: All steps complete. Test at http://localhost:5174
 
 
 

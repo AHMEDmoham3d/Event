@@ -28,31 +28,30 @@ const tarotCards = [
 
 
 function App() {
+  const [deck, setDeck] = useState<number[]>([]);
   const [drawnCardIndex, setDrawnCardIndex] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [lastDrawnIndex, setLastDrawnIndex] = useState<number | null>(null);
+
 
 
   const drawCard = () => {
     if (isAnimating) return;
+
+    // Shuffle full deck and take first 5 indices for horizontal row
+    const shuffled = [...Array(tarotCards.length).keys()].sort(() => Math.random() - 0.5);
+    setDeck(shuffled.slice(0, 5));
+    setDrawnCardIndex(null);
     setIsAnimating(true);
-    setDrawnCardIndex(null); // Reset
 
+    // Draw middle card (index 2)
     setTimeout(() => {
-      let randomIndex = Math.floor(Math.random() * 9); // 0-8 for visible deck
-      do {
-        randomIndex = Math.floor(Math.random() * 9);
-      } while (randomIndex === lastDrawnIndex && 9 > 1);
-
-
-      setDrawnCardIndex(randomIndex);
-      setLastDrawnIndex(randomIndex);
-
+      setDrawnCardIndex(2);
       setTimeout(() => {
         setIsAnimating(false);
       }, 1200);
-    }, 200);
+    }, 500);
   };
+
 
 
   return (
@@ -78,12 +77,12 @@ function App() {
         <div className="flex flex-col items-center space-y-6 sm:space-y-8">
           {/* Deck of cards - fanned layout */}
           <div className="deck-container perspective-container max-w-md w-full">
-            {Array.from({length: 9}, (_, i) => i).map((index) => {
-              const card = tarotCards[index % tarotCards.length];
+            {deck.slice(0,5).map((cardId, index) => {
+              const card = tarotCards[cardId];
               const isDrawn = drawnCardIndex === index;
               return (
                 <div
-                  key={index}
+                  key={cardId}
                   className={`deck-card tarot-card absolute inset-0 mx-auto transition-all duration-1000 ${
                     isDrawn ? 'deck-card-emerging flipping' : ''
                   } ${isAnimating && !isDrawn ? 'deck-card-fade' : ''}`}
@@ -112,6 +111,7 @@ function App() {
                 </div>
               );
             })}
+
           </div>
 
 
