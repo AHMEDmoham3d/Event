@@ -1,63 +1,59 @@
 import { useState } from 'react';
 import { Sparkles } from 'lucide-react';
 
-const tarotMessages = [
-  "The path you seek is already unfolding beneath your feet.",
-  "A hidden truth will soon reveal itself—be ready to listen.",
-  "The whispers of your soul know the way forward.",
-  "What you release today makes room for tomorrow's blessings.",
-  "Your intuition is sharper than you believe—trust it.",
-  "The universe conspires in your favor, even in silence.",
-  "A door you thought closed is merely waiting for your touch.",
-  "Your strength lies not in certainty, but in embracing the unknown.",
-  "The seeds you planted in darkness are ready to bloom.",
-  "A chance encounter will illuminate your next chapter.",
-  "Your past has prepared you for this very moment.",
-  "The answer you seek dwells in the question itself.",
-  "A transformation is stirring within—allow it to emerge.",
-  "Your energy is shifting toward alignment and grace.",
-  "The moon's pull reminds you that change is natural.",
-  "A creative spark within you demands expression.",
-  "The chains you feel are crafted from your own doubts.",
-  "A message from the stars: you are exactly where you need to be.",
-  "Your vulnerability is the gateway to your power.",
-  "The currents of fate are turning in your direction.",
-  "A forgotten dream is calling to be remembered.",
-  "Your patience will soon bear unexpected fruit.",
-  "The wisdom you seek already resides within you.",
-  "A cycle is completing—honor what it has taught you.",
-  "Your authenticity is your most powerful magic.",
-  "The veil between worlds grows thin—stay open to signs.",
-  "A mentor or guide approaches from an unexpected direction.",
-  "Your heart knows truths your mind has yet to accept.",
-  "The shadows you fear hold gifts you cannot yet see.",
-  "A new beginning awaits beyond the edge of your comfort."
+const tarotCards = [
+  { name: "The Fool", message: "Embrace new beginnings with childlike wonder. Leap into the unknown—adventure awaits." },
+  { name: "The Magician", message: "You have all the tools you need. Manifest your desires through focused intention." },
+  { name: "The High Priestess", message: "Trust your intuition. The answers lie within your inner wisdom and mysteries." },
+  { name: "The Empress", message: "Nurture yourself and others. Abundance and creativity flow through care and connection." },
+  { name: "The Emperor", message: "Establish structure and discipline. Take command of your reality with authority." },
+  { name: "The Hierophant", message: "Seek guidance from tradition and teachers. Spiritual structure supports your growth." },
+  { name: "The Lovers", message: "Choose with your heart. Harmony and meaningful relationships are aligning." },
+  { name: "The Chariot", message: "Willpower conquers obstacles. Direct your focus and charge toward victory." },
+  { name: "Strength", message: "True power is gentle. Tame your inner beast through compassion and courage." },
+  { name: "The Hermit", message: "Solitude brings clarity. Seek inner truth away from the world's distractions." },
+  { name: "Wheel of Fortune", message: "Cycles turn in your favor. Embrace change as opportunity for growth." },
+  { name: "Justice", message: "Truth and balance prevail. Your actions create fair outcomes—stay honest." },
+  { name: "The Hanged Man", message: "New perspective through surrender. Let go to gain profound understanding." },
+  { name: "Death", message: "Transformation clears the old. Endings birth powerful new beginnings." },
+  { name: "Temperance", message: "Balance opposites harmoniously. Patience blends extremes into healing." },
+  { name: "The Devil", message: "Face your shadows. Freedom comes from breaking self-imposed chains." },
+  { name: "The Tower", message: "Sudden change destroys illusions. Rebuild on truth after the storm." },
+  { name: "The Star", message: "Hope and inspiration guide you. Renewed faith illuminates your path." },
+  { name: "The Moon", message: "Navigate uncertainty with intuition. Illusions hide deeper truths." },
+  { name: "The Sun", message: "Pure joy and success shine brightly. Vitality and clarity embrace you." },
+  { name: "Judgement", message: "Awakening calls. Forgive the past and rise renewed." },
+  { name: "The World", message: "Completion and wholeness achieved. Integration brings fulfillment." }
 ];
 
+
 function App() {
-  const [currentMessage, setCurrentMessage] = useState<string | null>(null);
-  const [isFlipping, setIsFlipping] = useState(false);
-  const [lastMessageIndex, setLastMessageIndex] = useState<number | null>(null);
-  const [hasDrawn, setHasDrawn] = useState(false);
+  const [drawnCardIndex, setDrawnCardIndex] = useState<number | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [lastDrawnIndex, setLastDrawnIndex] = useState<number | null>(null);
+
 
   const drawCard = () => {
-    setIsFlipping(true);
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setDrawnCardIndex(null); // Reset
 
     setTimeout(() => {
-      let randomIndex;
+      let randomIndex = Math.floor(Math.random() * 9); // 0-8 for visible deck
       do {
-        randomIndex = Math.floor(Math.random() * tarotMessages.length);
-      } while (randomIndex === lastMessageIndex && tarotMessages.length > 1);
+        randomIndex = Math.floor(Math.random() * 9);
+      } while (randomIndex === lastDrawnIndex && 9 > 1);
 
-      setCurrentMessage(tarotMessages[randomIndex]);
-      setLastMessageIndex(randomIndex);
-      setHasDrawn(true);
+
+      setDrawnCardIndex(randomIndex);
+      setLastDrawnIndex(randomIndex);
 
       setTimeout(() => {
-        setIsFlipping(false);
-      }, 300);
-    }, 600);
+        setIsAnimating(false);
+      }, 1200);
+    }, 200);
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 flex flex-col items-center justify-center p-4 sm:p-6 relative overflow-hidden">
@@ -80,47 +76,65 @@ function App() {
         </div>
 
         <div className="flex flex-col items-center space-y-6 sm:space-y-8">
-          <div className="perspective-container">
-            <div className={`tarot-card ${isFlipping ? 'flipping' : ''} ${hasDrawn ? 'revealed' : ''}`}>
-              <div className="card-inner">
-                <div className="card-back">
-                  <div className="card-pattern"></div>
-                </div>
-                <div className="card-front">
-                  {currentMessage && (
-                    <div className="p-6 sm:p-8 h-full flex flex-col items-center justify-center">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 mb-4 sm:mb-6 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/50">
-                        <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-purple-950" />
-                      </div>
-                      <p className="text-amber-50 text-base sm:text-lg md:text-xl font-serif leading-relaxed text-center px-2">
-                        {currentMessage}
-                      </p>
+          {/* Deck of cards - fanned layout */}
+          <div className="deck-container perspective-container max-w-md w-full">
+            {Array.from({length: 9}, (_, i) => i).map((index) => {
+              const card = tarotCards[index % tarotCards.length];
+              const isDrawn = drawnCardIndex === index;
+              return (
+                <div
+                  key={index}
+                  className={`deck-card tarot-card absolute inset-0 mx-auto transition-all duration-1000 ${
+                    isDrawn ? 'deck-card-emerging flipping' : ''
+                  } ${isAnimating && !isDrawn ? 'deck-card-fade' : ''}`}
+                  style={{ zIndex: isDrawn ? 10 : 10 - index }}
+                >
+                  <div className="card-inner">
+                    <div className="card-back">
+                      <div className="card-pattern"></div>
                     </div>
-                  )}
+                    <div className="card-front">
+                      {isDrawn && card && (
+                        <div className="p-6 sm:p-8 h-full flex flex-col items-center justify-center text-center">
+                          <h3 className="text-amber-50 text-xl sm:text-2xl md:text-3xl font-serif mb-4 font-bold text-shadow-glow">
+                            {card.name}
+                          </h3>
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 mb-6 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/50">
+                            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-purple-950" />
+                          </div>
+                          <p className="text-amber-50 text-sm sm:text-base md:text-lg font-serif leading-relaxed px-4">
+                            {card.message}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
+
 
           <button
             onClick={drawCard}
-            disabled={isFlipping}
+            disabled={isAnimating}
             className="relative px-6 py-3 sm:px-10 sm:py-4 bg-gradient-to-r from-purple-900 via-purple-800 to-purple-900 text-amber-300 rounded-full font-semibold text-sm sm:text-base lg:text-lg tracking-wide border-2 border-amber-500/30 shadow-lg shadow-purple-900/50 hover:shadow-amber-500/50 hover:border-amber-500/60 hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 group overflow-hidden"
           >
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-amber-400/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></span>
             <span className="relative flex items-center gap-2">
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-              Track Your Message
+              Draw Your Card
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
             </span>
           </button>
 
-          {hasDrawn && (
+          {drawnCardIndex !== null && (
             <p className="text-purple-400 text-xs sm:text-sm italic animate-fade-in">
-              Reflect upon this message. Draw again when you are ready.
+              Your card has spoken. Reflect and draw again when ready.
             </p>
           )}
         </div>
+
       </div>
     </div>
   );
